@@ -4,15 +4,28 @@
 $(document).ready(function () {
   var currentQuestion;
   var timeLeft = 10;
+  var interval;
+  var score = 0;
 
-  var interval = setInterval(function () {
-    timeLeft--;
+  var updateScore = function (amount) {
+    score += amount;
+    $("#score").text(score);
+  };
+
+  //UPDATES THE COUNTDOWN TIMER
+  var updateTimeLeft = function (amount) {
+    timeLeft += amount;
     $("#time-left").text(timeLeft);
-    if (timeLeft === 0) {
-      clearInterval(interval);
-    }
-    console.log(timeLeft);
-  }, 1000);
+  };
+  //COUNTDOWN TIMER
+  // var interval = setInterval(function () {
+  //   updateTimeLeft(-1);
+  //   $("#time-left").text(timeLeft);
+  //   if (timeLeft === 0) {
+  //     clearInterval(interval);
+  //   }
+  //   console.log(timeLeft);
+  // }, 1000);
 
   //SHOWS THE EQUATION ON THE SCREEN
   var renderNewQuestion = function () {
@@ -34,6 +47,7 @@ $(document).ready(function () {
 
   //SETS THE VALUE FOR WHAT YOU TYPED IN THE INPUT FIELD
   $("#user-input").on("keyup", function () {
+    startGame();
     checkAnswer(Number($(this).val()), currentQuestion.answer);
   });
 
@@ -41,13 +55,32 @@ $(document).ready(function () {
   var checkAnswer = function (userInput, answer) {
     console.log(userInput === answer);
     if (userInput === answer) {
-      $("#user-input").val("");
       renderNewQuestion();
+      $("#user-input").val("");
+      updateTimeLeft(+1);
+      updateScore(+1);
     } else {
       setTimeout(function () {
         $("#user-input").val("");
       }, 500);
     }
   };
+
+  var startGame = function () {
+    if (!interval) {
+      if (timeLeft === 0) {
+        updateTimeLeft(10);
+        updateScore(-score);
+      }
+      interval = setInterval(function () {
+        updateTimeLeft(-1);
+        if (timeLeft === 0) {
+          clearInterval(interval);
+          interval = undefined;
+        }
+      }, 1000);
+    }
+  };
+
   renderNewQuestion();
 });
