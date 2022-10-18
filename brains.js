@@ -7,6 +7,7 @@ $(document).ready(function () {
 
   var interval = setInterval(function () {
     timeLeft--;
+    $("#time-left").text(timeLeft);
     if (timeLeft === 0) {
       clearInterval(interval);
     }
