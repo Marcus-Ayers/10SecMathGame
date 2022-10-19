@@ -1,12 +1,13 @@
-// var randomNumberGenerator = function (size) {
-//   return Math.ceil(Math.random() * size);
-// };
 $(document).ready(function () {
   var currentQuestion;
-  var timeLeft = 10;
+  var timeLeft = 9;
   var interval;
   var score = 0;
+  var x = document.getElementById("seconds-left");
+  x.style.visibility = "hidden";
+  var y;
 
+  //FUNCTION CALL TO UPDATE USERS SCORE
   var updateScore = function (amount) {
     score += amount;
     $("#score").text(score);
@@ -16,21 +17,22 @@ $(document).ready(function () {
   var updateTimeLeft = function (amount) {
     timeLeft += amount;
     $("#time-left").text(timeLeft);
+      x.style.visibility = "visible";
   };
-  //COUNTDOWN TIMER
-  // var interval = setInterval(function () {
-  //   updateTimeLeft(-1);
-  //   $("#time-left").text(timeLeft);
-  //   if (timeLeft === 0) {
-  //     clearInterval(interval);
-  //   }
-  //   console.log(timeLeft);
-  // }, 1000);
 
-  //SHOWS THE EQUATION ON THE SCREEN
+  //SHOWS THE MATH EQUATION ON THE SCREEN
   var renderNewQuestion = function () {
+    var random = Math.ceil(Math.random() * 2);
     currentQuestion = questionGenerator();
-    $("#equation").text(currentQuestion.equation);
+    if (random == 1) {
+      y = 1;
+      $("#equation").text(currentQuestion.equation)
+    } else if (random == 2) {
+      y = 0;
+      $("#equation").text(currentQuestion.mulitplyEquation);
+    } else {
+
+    }
   };
 
   //GENERATES A RANDOM EQUATION
@@ -38,18 +40,33 @@ $(document).ready(function () {
     var question = {};
     var num1 = Math.ceil(Math.random() * 10);
     var num2 = Math.ceil(Math.random() * 10);
+    var num3 = Math.ceil(Math.random() * 5);
+    var num4 = Math.ceil(Math.random() * 5);
 
+    question.multiplyAnswer = num3 * num4;
+    question.mulitplyEquation = String(num3) + " * " + String(num4)
     question.answer = num1 + num2;
     question.equation = String(num1) + " + " + String(num2);
 
     return question;
   };
 
-  //SETS THE VALUE FOR WHAT YOU TYPED IN THE INPUT FIELD
-  $("#user-input").on("keyup", function () {
-    startGame();
-    checkAnswer(Number($(this).val()), currentQuestion.answer);
-  });
+ // STARTS THE GAME WHEN YOU PRESS A KEY AND CHECKS YOUR ANSWER
+ // EXCLUDES THE ENTER KEY FOR WHEN YOU CLEAR THE ALERT AT END OF GAME
+     $("#user-input").on("keyup", function (e) {
+      if(e.keyCode == 13) {
+    } else {
+      startGame();
+      if (y == 1) {
+        checkAnswer(Number($(this).val()), currentQuestion.answer);
+        console.log(y)
+      } else {
+        checkAnswer(Number($(this).val()), currentQuestion.multiplyAnswer);
+        console.log(y)
+      }
+    }
+   });
+
 
   //CHECKS YOUR ANSWER TO SEE IF IT MATCHES WITH THE CORRECT RESULT
   var checkAnswer = function (userInput, answer) {
@@ -66,10 +83,11 @@ $(document).ready(function () {
     }
   };
 
+  //FUNCTION TO START THE GAME
   var startGame = function () {
     if (!interval) {
       if (timeLeft === 0) {
-        updateTimeLeft(10);
+        updateTimeLeft(9);
         updateScore(-score);
       }
       interval = setInterval(function () {
@@ -77,6 +95,7 @@ $(document).ready(function () {
         if (timeLeft === 0) {
           clearInterval(interval);
           interval = undefined;
+          alert("You scored " + score + " points.");
         }
       }, 1000);
     }
