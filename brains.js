@@ -22,16 +22,17 @@ $(document).ready(function () {
 
   //SHOWS THE MATH EQUATION ON THE SCREEN
   var renderNewQuestion = function () {
-    var random = Math.ceil(Math.random() * 2);
+    var random = Math.floor(Math.random() * 3);
     currentQuestion = questionGenerator();
     if (random == 1) {
       y = 1;
       $("#equation").text(currentQuestion.equation)
     } else if (random == 2) {
-      y = 0;
+      y = 2;
       $("#equation").text(currentQuestion.mulitplyEquation);
-    } else {
-
+    } else if (random == 0) {
+      $("#equation").text(currentQuestion.divideEquation);
+      y = 0;
     }
   };
 
@@ -42,12 +43,34 @@ $(document).ready(function () {
     var num2 = Math.ceil(Math.random() * 10);
     var num3 = Math.ceil(Math.random() * 5);
     var num4 = Math.ceil(Math.random() * 5);
-
+    
+    
     question.multiplyAnswer = num3 * num4;
     question.mulitplyEquation = String(num3) + " * " + String(num4)
     question.answer = num1 + num2;
     question.equation = String(num1) + " + " + String(num2);
 
+    //GETTING AND SETTING THE NUMBERS FOR DIVISION
+      var num5;
+      var num6;
+      var flag = true;
+      let divideGenerator = function() {
+        var tempNum = Math.ceil(Math.random() * 20);
+        var tempNum2 = Math.ceil(Math.random() * 20 + 1);
+        num5 = tempNum;
+        num6 = tempNum2;
+      }
+      divideGenerator();
+      
+      while(flag == true) {
+        if (num5 > num6 && num5/num6 % 1 == 0) {
+          question.divideAnswer = num5 / num6;
+          question.divideEquation = String(num5) + " / " + String(num6);
+          flag = false;
+        } else {
+          divideGenerator();
+        }
+      }
     return question;
   };
 
@@ -59,11 +82,14 @@ $(document).ready(function () {
       startGame();
       if (y == 1) {
         checkAnswer(Number($(this).val()), currentQuestion.answer);
-        console.log(y)
-      } else {
+        console.log(currentQuestion.answer);
+      } else if (y == 2) {
         checkAnswer(Number($(this).val()), currentQuestion.multiplyAnswer);
-        console.log(y)
-      }
+      console.log(currentQuestion.multiplyAnswer);
+      } else if (y == 0) {
+        checkAnswer(Number($(this).val()), currentQuestion.divideAnswer);
+      console.log(currentQuestion.divideAnswer);
+      } 
     }
    });
 
