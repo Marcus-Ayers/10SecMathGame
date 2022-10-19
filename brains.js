@@ -22,7 +22,7 @@ $(document).ready(function () {
 
   //SHOWS THE MATH EQUATION ON THE SCREEN
   var renderNewQuestion = function () {
-    var random = Math.floor(Math.random() * 3);
+    var random = Math.floor(Math.random() * 4);
     currentQuestion = questionGenerator();
     if (random == 1) {
       y = 1;
@@ -33,6 +33,9 @@ $(document).ready(function () {
     } else if (random == 0) {
       $("#equation").text(currentQuestion.divideEquation);
       y = 0;
+    } else if (random == 3) {
+      $("#equation").text(currentQuestion.minusEquation);
+      y = 3;
     }
   };
 
@@ -44,7 +47,28 @@ $(document).ready(function () {
     var num3 = Math.ceil(Math.random() * 5);
     var num4 = Math.ceil(Math.random() * 5);
     
-    
+    //GETTING AND SETTING THE NUMBERS FOR SUBTRACTION
+    var num7;
+    var num8;
+    var flag2 = true;
+    let minusGenerator = function() {
+      var tempNum3 = Math.ceil(Math.random() * 10);
+      var tempNum4 = Math.ceil(Math.random() * 10);
+      num7 = tempNum3;
+      num8 = tempNum4;
+    }
+    minusGenerator();
+
+    while(flag2 == true) {
+      if (num7 >= num8) {
+        question.minusAnswer = num7 - num8;
+        question.minusEquation = String(num7) + " - " + String(num8);
+        flag2 = false;
+      } else {
+        minusGenerator();
+      }
+    }
+      
     question.multiplyAnswer = num3 * num4;
     question.mulitplyEquation = String(num3) + " * " + String(num4)
     question.answer = num1 + num2;
@@ -82,14 +106,12 @@ $(document).ready(function () {
       startGame();
       if (y == 1) {
         checkAnswer(Number($(this).val()), currentQuestion.answer);
-        console.log(currentQuestion.answer);
       } else if (y == 2) {
         checkAnswer(Number($(this).val()), currentQuestion.multiplyAnswer);
-      console.log(currentQuestion.multiplyAnswer);
       } else if (y == 0) {
         checkAnswer(Number($(this).val()), currentQuestion.divideAnswer);
-      console.log(currentQuestion.divideAnswer);
-      } 
+      } else if (y == 3) {
+        checkAnswer(Number($(this).val()), currentQuestion.minusAnswer);      }
     }
    });
 
